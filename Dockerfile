@@ -21,4 +21,4 @@ RUN rm -rf /tmp/teeworlds
 
 CMD ["/usr/local/bin/teeworlds_srv", "-f", "/etc/teeworlds.cfg"]
 ENTRYPOINT ["/entrypoint.sh"]
-EXPOSE 8554
+EXPOSE 8303
