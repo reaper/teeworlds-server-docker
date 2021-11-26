@@ -14,10 +14,11 @@ WORKDIR /tmp/teeworlds/build
 
 RUN cmake .. && make install
 
-COPY docker/entrypoint.sh /entrypoint.sh
-
 WORKDIR /
 RUN rm -rf /tmp/teeworlds
+
+COPY entrypoint.sh /entrypoint.sh
+COPY teeworlds.cfg /etc/teeworlds.cfg
 
 CMD ["/usr/local/bin/teeworlds_srv", "-f", "/etc/teeworlds.cfg"]
 ENTRYPOINT ["/entrypoint.sh"]
