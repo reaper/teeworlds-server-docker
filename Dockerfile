@@ -1,22 +1,28 @@
-FROM debian:buster-slim
-
-WORKDIR /tmp
+FROM debian:buster-slim AS build
 
 RUN apt-get update
-RUN apt-get -y install build-essential cmake git libfreetype6-dev libsdl2-dev libpnglite-dev libwavpack-dev python3
+RUN apt-get -y install build-essential \
+  cmake \
+  git \
+  libfreetype6-dev \
+  libsdl2-dev \
+  libpnglite-dev \
+  libwavpack-dev \
+  python3
 
+WORKDIR /tmp
 RUN git clone https://github.com/teeworlds/teeworlds --recurse-submodules
+
 WORKDIR /tmp/teeworlds
-RUN git submodule update --init
-
 RUN mkdir build
+
 WORKDIR /tmp/teeworlds/build
+RUN mkdir out
+RUN cmake .. && make DESTDIR=$PWD/out install
 
-RUN cmake .. && make install
+FROM debian:buster-slim
 
-WORKDIR /
-RUN rm -rf /tmp/teeworlds
-
+COPY --from=build /tmp/teeworlds/build/out /
 COPY entrypoint.sh /entrypoint.sh
 COPY teeworlds.cfg /etc/teeworlds.cfg
 
